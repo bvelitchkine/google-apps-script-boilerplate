@@ -1,4 +1,4 @@
 {
-  "scriptId": "1TC3AdLYpGHLQNR-1iHSDTshazmyL0BnLSkFPdqP_AScBYSEp_5GMJXSRk244kQnNWtJFSj2u",
-  "rootDir": "/Users/bvelitchkine/Documents/coding/google-apps-script-boilerplate"
+  "scriptId": "id of the google apps script project",
+  "rootDir": "/path/to/the/project/on/your/local/machine"
 }
