@@ -1,0 +1,8 @@
+.gitignore
+.clasp.json
+eslint.config.mjs
+package-lock.json
+package.json
+node_modules/**
+prompts/**
+.DS_Store
