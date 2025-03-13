@@ -1,12 +1,12 @@
 function SheetUtils() {
-  function _getSpreadsheet(spreadsheetId=null) {
+  function _getSpreadsheet(spreadsheetId = null) {
     if (spreadsheetId) {
       return SpreadsheetApp.openById(spreadsheetId);
     }
     return SpreadsheetApp.getActiveSpreadsheet();
   }
 
-  function _getSheet(spreadsheet, sheetName=null) {
+  function _getSheet(spreadsheet, sheetName = null) {
     if (sheetName) {
       return spreadsheet.getSheetByName(sheetName);
     }
@@ -18,10 +18,14 @@ function SheetUtils() {
     return headers;
   };
 
-  function getSpreadsheetAndSheet(spreadsheetId=null, sheetName=null) {
+  function getSpreadsheetAndSheet(spreadsheetId = null, sheetName = null) {
     const spreadsheet = _getSpreadsheet(spreadsheetId);
     const sheet = _getSheet(spreadsheet, sheetName);
     return [spreadsheet, sheet];
+  }
+
+  function getSheetData(sheet) {
+    return sheet.getDataRange().getValues();
   }
 
   function applyFunctionToColumn(sheet, columnName, func) {
@@ -44,17 +48,37 @@ function SheetUtils() {
     if (columnIndex < 0) {
       const lastCol = sheet.getLastColumn();
       sheet.insertColumnAfter(lastCol);
-      Logger.log(lastCol+1);
-      Logger.log(dataToInsert.length+1)
-      sheet.getRange(1, lastCol+1, dataToInsert.length+1, 1).setValues([[columnName]].concat(dataToInsert));
+      Logger.log(lastCol + 1);
+      Logger.log(dataToInsert.length + 1)
+      sheet.getRange(1, lastCol + 1, dataToInsert.length + 1, 1).setValues([[columnName]].concat(dataToInsert));
       return;
     }
-    sheet.getRange(2, columnIndex+1, dataToInsert.length, 1).setValues(dataToInsert);
+    sheet.getRange(2, columnIndex + 1, dataToInsert.length, 1).setValues(dataToInsert);
+  }
+
+  function saveObjectsAsColumns(sheet, objects) {
+    if (!objects?.length) return;
+
+    // Get all unique keys from the objects
+    const allKeys = [...new Set(objects.flatMap(Object.keys))];
+
+    // Transform objects into columns
+    const columnData = {};
+    allKeys.forEach(key => {
+      columnData[key] = objects.map(obj => obj[key] || "");
+    });
+
+    // Save each column
+    Object.entries(columnData).forEach(([columnName, values]) => {
+      saveNewColumnData(sheet, values, columnName);
+    });
   }
 
   return Object.freeze({
     getSpreadsheetAndSheet,
+    getSheetData,
     applyFunctionToColumn,
-    saveNewColumnData
+    saveNewColumnData,
+    saveObjectsAsColumns
   });
 }
